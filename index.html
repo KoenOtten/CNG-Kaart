@@ -119,6 +119,73 @@ details summary{cursor:pointer;padding:12px 0 2px;color:var(--link);font-weight:
 .onboard{position:fixed;z-index:700;left:12px;right:12px;bottom:calc(76px + var(--sb));max-width:520px;margin:0 auto;background:var(--card);border-radius:16px;padding:16px;box-shadow:0 8px 30px rgba(0,0,0,.2);display:none}
 .onboard h3{margin:0 0 6px;font-size:18px}
 .onboard p{margin:0 0 12px;color:var(--muted);font-size:14px}
+/* ===== Donker en modern (versie 1.3) ===== */
+:root{--bg:#070b10;--card:#101721;--card2:#151f2b;--ink:#eef3f8;--muted:#8a98a8;--line:#223043;--link:#63d2ff;--petrol:#0e1824;--petrol2:#63d2ff;--accent:#ffb547;--fav:#ff5c8a;--cyan:#63d2ff}
+body{background:radial-gradient(1200px 600px at 10% -10%,#0e2236 0%,transparent 60%),radial-gradient(900px 500px at 110% 10%,#2a1640 0%,transparent 55%),var(--bg)}
+#map,.leaflet-container{background:#070b10}
+.leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.92) contrast(1.05) saturate(.7)}
+.leaflet-control-attribution{background:rgba(7,11,16,.75)!important;color:#8a98a8!important;border-radius:8px 0 0 0}
+.leaflet-control-attribution a{color:#63d2ff!important}
+.search form,.results,.routebar,.round{background:rgba(16,23,33,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.search input{color:var(--ink)}
+.search input::placeholder{color:var(--muted)}
+.round{color:var(--cyan)}
+.round.on{background:linear-gradient(135deg,#63d2ff,#3b82f6);color:#04121c}
+.routebar{background:linear-gradient(135deg,rgba(99,210,255,.18),rgba(255,181,71,.12)),rgba(16,23,33,.92);color:var(--ink)}
+.routebar button{background:rgba(255,255,255,.08);color:var(--ink);border:1px solid var(--line)}
+.results button{color:var(--ink)}
+.results .hd{background:var(--card2);color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-size:11px}
+.tabs{background:rgba(7,11,16,.9);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line);box-shadow:0 -10px 30px rgba(0,0,0,.4)}
+.tabs button{position:relative;color:#5d6b7b;font-weight:600}
+.tabs button.on{color:var(--cyan)}
+.tabs button.on svg{color:var(--cyan);filter:drop-shadow(0 0 8px rgba(99,210,255,.6))}
+.tabs button.on::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:3px;border-radius:0 0 3px 3px;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.panel{background:radial-gradient(900px 420px at 50% -120px,rgba(99,210,255,.12),transparent 70%),var(--bg)}
+.panel h1{font-size:34px;font-weight:800;letter-spacing:-.02em;background:linear-gradient(120deg,#fff 30%,#63d2ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.panel .sub{color:var(--muted)}
+.row,.card,.empty{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.row b{color:var(--ink);font-weight:700}
+.km{color:var(--cyan);background:rgba(99,210,255,.1);border-radius:10px;padding:4px 9px}
+.rec{border:1px solid rgba(255,181,71,.45);border-left:5px solid var(--accent);box-shadow:0 0 0 1px rgba(255,181,71,.12),0 10px 30px rgba(255,181,71,.08)}
+.rkm{color:var(--accent)}
+.heart{color:#5d6b7b}
+.heart.on{color:var(--fav);filter:drop-shadow(0 0 8px rgba(255,92,138,.6))}
+.btn{background:linear-gradient(135deg,#63d2ff,#3b82f6);color:#04121c;box-shadow:0 8px 24px rgba(59,130,246,.3);border-radius:14px}
+.btn.alt{background:var(--card2);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn[disabled]{opacity:.45;box-shadow:none}
+textarea,.inp,select{background:#0a1018;color:var(--ink);border:1px solid var(--line);border-radius:14px}
+textarea:focus,.inp:focus,select:focus{outline:2px solid rgba(99,210,255,.5);border-color:transparent}
+.seg{background:#0a1018;border:1px solid var(--line);border-radius:14px}
+.seg button{color:var(--muted);font-weight:600}
+.seg button.on{background:linear-gradient(135deg,#63d2ff,#3b82f6);color:#04121c;box-shadow:0 4px 14px rgba(59,130,246,.35)}
+.chip{background:#0a1018;border-color:var(--line);color:var(--muted)}
+.chip.ok{color:#5ef0a6;border-color:rgba(94,240,166,.4);background:rgba(94,240,166,.08)}
+.chip.err{color:#ff7a8a;border-color:rgba(255,122,138,.4);background:rgba(255,122,138,.08)}
+.chip.busy{color:var(--cyan);border-color:rgba(99,210,255,.4);background:rgba(99,210,255,.08)}
+.err-t{color:#ff7a8a}
+.sheet{background:linear-gradient(180deg,#152131,#0d141e);border-top:1px solid var(--line);color:var(--ink);box-shadow:0 -20px 60px rgba(0,0,0,.6)}
+.sheet h2{font-weight:800;letter-spacing:-.01em}
+.sheet dt{color:var(--muted)}
+.sheet .close{background:var(--card2);color:var(--muted)}
+.grip{background:#2a3a4e}
+.onroute{background:rgba(255,181,71,.08);border-left:4px solid var(--accent);color:var(--ink)}
+.nav .btn{background:linear-gradient(135deg,#63d2ff,#3b82f6);color:#04121c}
+.nav .waze{background:linear-gradient(135deg,#ffd166,#ff8a3d);color:#1a0f00}
+.links a{color:var(--cyan)}
+.pin{background:var(--cyan);border:2px solid #04121c;box-shadow:0 0 0 4px rgba(99,210,255,.18),0 0 18px rgba(99,210,255,.55)}
+.pin.fav{background:var(--fav);box-shadow:0 0 0 4px rgba(255,92,138,.2),0 0 18px rgba(255,92,138,.5)}
+.pin.route{background:var(--accent);box-shadow:0 0 0 4px rgba(255,181,71,.2),0 0 18px rgba(255,181,71,.6)}
+.pin.priv{background:#5d6b7b;box-shadow:none}
+.clu{background:radial-gradient(circle at 30% 30%,#63d2ff,#2563eb);color:#04121c;border:2px solid rgba(255,255,255,.85);box-shadow:0 0 0 6px rgba(99,210,255,.15),0 0 24px rgba(99,210,255,.45)}
+.me{background:#fff;border:3px solid #63d2ff;box-shadow:0 0 0 8px rgba(99,210,255,.2),0 0 16px rgba(99,210,255,.6)}
+.tgt{border:4px solid var(--accent);background:#070b10;box-shadow:0 0 0 6px rgba(255,181,71,.2),0 0 16px rgba(255,181,71,.7)}
+.toast{background:linear-gradient(135deg,#152131,#0d141e);border:1px solid var(--line);color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.onboard{background:linear-gradient(180deg,#152131,#0d141e);border:1px solid var(--line);color:var(--ink)}
+.onboard p{color:var(--muted)}
+.onboard h3{font-size:20px;font-weight:800}
+.small{color:var(--muted)}
+.small a{color:var(--cyan)}
+.sum{background:linear-gradient(120deg,#fff 30%,#63d2ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 </style>
 </head>
 <body>
@@ -193,7 +260,7 @@ details summary{cursor:pointer;padding:12px 0 2px;color:var(--link);font-weight:
   <p class="small">Verversen haalt de actuele stationslijst op bij OpenStreetMap. Houd de app open tot het klaar is. Gaat een land mis, dan probeert de app het automatisch nog een keer. Lukt dat niet, dan blijft de vorige lijst van dat land staan en kun je het later opnieuw proberen.</p>
   <h3>Over de gegevens</h3>
   <p class="small">Stations en kaart: &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap-bijdragers</a> (ODbL). Routes: OSRM op basis van OpenStreetMap. De gegevens worden door vrijwilligers bijgehouden en kunnen onvolledig of verouderd zijn. Prijzen en storingen staan er niet in.</p>
-  <p class="small">Versie 1.2</p>
+  <p class="small">Versie 1.3</p>
 </div></section>
 
 <div class="sheet" id="sheet" role="dialog" aria-label="Station"></div>
