@@ -1,5 +1,5 @@
-// CNG Kaart - service worker: app werkt ook zonder internet (behalve kaarttegels en verversen)
-const CACHE = 'cngkaart-v1';
+// CNG Kaart - service worker
+const CACHE = 'cngkaart-v2';
 const SHELL = [
   './',
   './index.html',
@@ -13,7 +13,6 @@ const SHELL = [
 ];
 
 self.addEventListener('install', e => {
-  // Elk bestand los, zodat één mislukte download de installatie niet blokkeert
   e.waitUntil(
     caches.open(CACHE)
       .then(c => Promise.all(SHELL.map(u => c.add(u).catch(() => null))))
@@ -31,12 +30,11 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   const req = e.request;
-  if (req.method !== 'GET') return; // OpenStreetMap-verzoeken (POST) nooit cachen
+  if (req.method !== 'GET') return;
   const url = new URL(req.url);
   const isShell = url.origin === location.origin || url.hostname === 'cdnjs.cloudflare.com';
-  if (!isShell) return; // kaarttegels en zoeken gaan gewoon via internet
+  if (!isShell) return;
 
-  // Eigen bestanden: eerst internet (nieuwste versie), anders uit de cache
   if (url.origin === location.origin) {
     e.respondWith(
       fetch(req)
@@ -45,6 +43,5 @@ self.addEventListener('fetch', e => {
     );
     return;
   }
-  // Bibliotheken: eerst uit de cache
   e.respondWith(caches.match(req).then(r => r || fetch(req)));
 });
