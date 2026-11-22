@@ -137,7 +137,7 @@ button{cursor:pointer}
   <p><button class="btn" id="refreshAll">Alle landen verversen</button></p>
   <p class="small">Verversen haalt de actuele stationslijst op bij OpenStreetMap. Gaat een land mis, dan blijft de vorige lijst van dat land staan en kun je het later opnieuw proberen.</p>
   <h3>Over de gegevens</h3>
-  <p class="small">Stationsgegevens: &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap-bijdragers</a>, beschikbaar onder de ODbL-licentie. Kaart: &copy; OpenStreetMap, &copy; CARTO. De gegevens worden door vrijwilligers bijgehouden en kunnen onvolledig of verouderd zijn. Prijzen en storingen staan er niet in.</p>
+  <p class="small">Stationsgegevens: &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap-bijdragers</a>, beschikbaar onder de ODbL-licentie. Kaart: &copy; OpenStreetMap. De gegevens worden door vrijwilligers bijgehouden en kunnen onvolledig of verouderd zijn. Prijzen en storingen staan er niet in.</p>
   <p class="small">Versie 1.0</p>
 </div></section>
 
@@ -228,8 +228,8 @@ async function refresh(ccs){
 
 /* ---------- kaart ---------- */
 const map=L.map('map',{zoomControl:false,attributionControl:true}).setView([51.2,6.5],6);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:19,subdomains:'abcd',
-  attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,
+  attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
 const cluster=L.markerClusterGroup({showCoverageOnHover:false,maxClusterRadius:50,
   iconCreateFunction:c=>{const n=c.getChildCount(),s=n<10?34:n<100?40:48;return L.divIcon({html:`<div class="clu" style="width:${s}px;height:${s}px">${n}</div>`,className:'',iconSize:[s,s]})}});
 map.addLayer(cluster);
