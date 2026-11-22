@@ -186,6 +186,47 @@ textarea:focus,.inp:focus,select:focus{outline:2px solid rgba(99,210,255,.5);bor
 .small{color:var(--muted)}
 .small a{color:var(--cyan)}
 .sum{background:linear-gradient(120deg,#fff 30%,#63d2ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* ===== Versie 1.4: stoerder ontwerp ===== */
+:root{--g:#3cf09a;--blue:#2d7bff}
+body{background:radial-gradient(900px 500px at 0% 0%,rgba(45,123,255,.22),transparent 60%),radial-gradient(700px 500px at 100% 100%,rgba(60,240,154,.10),transparent 60%),#050a12}
+.leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.72) contrast(1.12) saturate(.6)}
+.tabs{background:rgba(6,12,22,.94);border-top:1px solid rgba(60,240,154,.16)}
+.tabs button.on{color:var(--g)}
+.tabs button.on svg{color:var(--g);filter:drop-shadow(0 0 8px rgba(60,240,154,.7))}
+.tabs button.on::before{background:var(--g);box-shadow:0 0 14px var(--g)}
+.btn,.seg button.on,.nav .btn{background:linear-gradient(135deg,#3b8bff,#2456e6);color:#fff;box-shadow:0 10px 30px rgba(45,123,255,.35)}
+.round.on{background:linear-gradient(135deg,#3cf09a,#17b86b);color:#03150c}
+.row.st{display:flex;align-items:center;gap:12px;padding:12px;border-radius:20px;background:linear-gradient(160deg,rgba(20,32,48,.94),rgba(10,17,27,.94));border:1px solid rgba(120,160,220,.14);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.row.st .main{display:flex;align-items:center;gap:12px;flex:1;min-width:0;border:0;background:none;padding:0;text-align:left;color:var(--ink)}
+.row.st .txt{flex:1;min-width:0;display:flex;flex-direction:column}
+.row.st .txt b{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row.st .txt small,.row.st .rowmeta{white-space:normal}
+.row.st.rec{border:1px solid rgba(255,181,71,.5);box-shadow:0 0 0 1px rgba(255,181,71,.15),0 12px 30px rgba(255,181,71,.12)}
+.bdg{flex:none;width:44px;height:44px;border-radius:14px;background:var(--c);color:var(--f);display:grid;place-items:center;font-weight:800;font-size:14px;letter-spacing:-.02em;box-shadow:0 6px 18px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.3)}
+.bdg.big{width:52px;height:52px;border-radius:16px;font-size:17px}
+.km{background:rgba(60,240,154,.12);color:var(--g);border:1px solid rgba(60,240,154,.3);border-radius:99px;padding:5px 10px;font-weight:700;font-size:14px}
+.rr{flex:none;text-align:right;display:flex;flex-direction:column;align-items:flex-end}
+.rkm{color:var(--g);font-weight:700}
+.navb{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#3b8bff,#2456e6);color:#fff;box-shadow:0 8px 20px rgba(45,123,255,.45)}
+.heart{flex:none}
+.mk{width:34px;height:34px;border-radius:50%;background:var(--c);color:var(--f);display:grid;place-items:center;font-weight:800;font-size:12px;border:2px solid #fff;box-shadow:0 0 0 4px rgba(255,255,255,.07),0 0 22px var(--c)}
+.mk span{letter-spacing:-.02em}
+.mk.fav{border-color:#ff5c8a;box-shadow:0 0 0 4px rgba(255,92,138,.3),0 0 22px #ff5c8a}
+.mk.route{border-color:#ffb547;box-shadow:0 0 0 4px rgba(255,181,71,.3),0 0 22px #ffb547}
+.clu{box-shadow:0 0 0 6px rgba(60,240,154,.14),0 0 26px rgba(60,240,154,.5);background:radial-gradient(circle at 30% 30%,#3cf09a,#11a463);color:#03150c;border:2px solid rgba(255,255,255,.85)}
+.hero{position:relative;overflow:hidden;border-radius:24px;padding:22px 20px 24px;margin:0 0 18px;background:radial-gradient(420px 220px at 100% 0%,rgba(60,240,154,.28),transparent 60%),linear-gradient(135deg,#0c2a4a,#071426);border:1px solid rgba(120,180,255,.2);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--g);font-weight:800}
+.hero-t{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:8px 0 6px;max-width:68%;color:#fff}
+.hero-s{font-size:14px;color:#9bb0c8;max-width:62%}
+.hero svg.pump{position:absolute;right:-4px;bottom:-8px;width:150px;height:auto}
+.panel h1{text-transform:none}
+.sheet .head{align-items:center}
+.onroute{box-shadow:none}
+.nav .waze{background:linear-gradient(135deg,#ffd166,#ff8a3d);color:#1a0f00;box-shadow:0 10px 30px rgba(255,160,60,.3)}
+.row.st .txt small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row.st .heart{width:36px;height:44px}
+.row.st .km{font-size:13px;padding:4px 8px;white-space:nowrap}
+.row.st .navb{width:42px;height:42px}
 </style>
 </head>
 <body>
@@ -241,6 +282,12 @@ textarea:focus,.inp:focus,select:focus{outline:2px solid rgba(99,210,255,.5);bor
 </div></section>
 
 <section class="panel" id="p-list"><div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Tanken onderweg</div>
+    <div class="hero-t">Zoek je volgende CNG-station</div>
+    <div class="hero-s">Gesorteerd op afstand vanaf je locatie.</div>
+    <svg class="pump" viewBox="0 0 120 150" aria-hidden="true"><rect x="22" y="20" width="76" height="120" rx="12" fill="#0d2d52" stroke="#3b8bff" stroke-width="3"/><rect x="34" y="34" width="52" height="30" rx="6" fill="#06192f" stroke="#3cf09a" stroke-width="2"/><text x="60" y="55" text-anchor="middle" font-size="16" font-weight="800" fill="#3cf09a" font-family="sans-serif">CNG</text><path d="M98 60h10a8 8 0 0 1 8 8v40a6 6 0 0 1-12 0" fill="none" stroke="#3b8bff" stroke-width="5" stroke-linecap="round"/><rect x="34" y="82" width="52" height="8" rx="4" fill="#3cf09a" opacity=".75"/><rect x="34" y="100" width="52" height="8" rx="4" fill="#2d7bff" opacity=".6"/></svg>
+  </div>
   <h1>Dichtbij</h1>
   <p class="sub" id="listSub"></p>
   <div id="list"></div>
@@ -260,7 +307,7 @@ textarea:focus,.inp:focus,select:focus{outline:2px solid rgba(99,210,255,.5);bor
   <p class="small">Verversen haalt de actuele stationslijst op bij OpenStreetMap. Houd de app open tot het klaar is. Gaat een land mis, dan probeert de app het automatisch nog een keer. Lukt dat niet, dan blijft de vorige lijst van dat land staan en kun je het later opnieuw proberen.</p>
   <h3>Over de gegevens</h3>
   <p class="small">Stations en kaart: &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap-bijdragers</a> (ODbL). Routes: OSRM op basis van OpenStreetMap. De gegevens worden door vrijwilligers bijgehouden en kunnen onvolledig of verouderd zijn. Prijzen en storingen staan er niet in.</p>
-  <p class="small">Versie 1.3</p>
+  <p class="small">Versie 1.4</p>
 </div></section>
 
 <div class="sheet" id="sheet" role="dialog" aria-label="Station"></div>
@@ -271,7 +318,7 @@ textarea:focus,.inp:focus,select:focus{outline:2px solid rgba(99,210,255,.5);bor
   <button data-tab="route"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H16a3.5 3.5 0 0 0 0-7H8a3.5 3.5 0 0 1 0-7h7.5"/></svg>Route</button>
   <button data-tab="list"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>Dichtbij</button>
   <button data-tab="fav"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6a5.2 5.2 0 0 1 9.3 6c-2.3 4.6-9.3 9-9.3 9z"/></svg>Favorieten</button>
-  <button data-tab="set"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>Verversen</button>
+  <button data-tab="set"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>Meer</button>
 </nav>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -381,7 +428,8 @@ const cluster=L.markerClusterGroup({showCoverageOnHover:false,maxClusterRadius:5
   iconCreateFunction:c=>{const n=c.getChildCount(),s=n<10?34:n<100?40:48;return L.divIcon({html:`<div class="clu" style="width:${s}px;height:${s}px">${n}</div>`,className:'',iconSize:[s,s]})}});
 map.addLayer(cluster);
 const pinCls=s=>favs.has(s.id)?' fav':onRoute.has(s.id)?' route':(s.acc==='private'||s.acc==='customers'?' priv':'');
-const pin=s=>L.divIcon({html:`<div class="pin${pinCls(s)}"></div>`,className:'',iconSize:[26,26],iconAnchor:[13,26]});
+const pin=s=>{const b=brandOf(s);const cls=favs.has(s.id)?' fav':onRoute.has(s.id)?' route':'';
+  return L.divIcon({html:`<div class="mk${cls}" style="--c:${b.bg};--f:${b.fg}"><span>${esc(b.mono)}</span></div>`,className:'',iconSize:[34,34],iconAnchor:[17,17]})};
 function renderMarkers(){
   cluster.clearLayers();
   cluster.addLayers(data.stations.map(s=>L.marker([s.lat,s.lon],{icon:pin(s),title:title(s)}).on('click',()=>openStation(s.id))));
@@ -643,6 +691,12 @@ $('#routebarHide').onclick=()=>{routeShown=false;drawRoute(false);if(tgtLayer){m
 
 /* --- resultaat tonen --- */
 function routeRow(st,info,pr,extra){
+  const b=brandOf(st);const ahead=info.km-pr.km,t=info.t-pr.t;
+  return `<div class="row st${extra?' rec':''}"><button class="main" data-open="${st.id}"><span class="bdg" style="--c:${b.bg};--f:${b.fg}">${esc(b.mono)}</span><span class="txt"><b>${esc(title(st))}</b><span class="rowmeta">${esc(place(st)||CNAME[st.cc])}</span><span class="rowmeta">${fmtKm(info.d)} van de route${extra?' · '+esc(extra):''}</span></span></button>
+    <span class="rr"><span class="rkm">${ahead<0?'gepasseerd':'over '+fmtKm(ahead)}</span><span class="rowmeta">${ahead<0?'':'ca. '+fmtDur(t)+' · '+clock(t)}</span></span>
+    <a class="navb" href="${gmapsVia(st,route.to)}" target="_blank" rel="noopener" aria-label="Navigeer als tussenstop">${NAVSVG}</a></div>`;
+}
+function routeRowOld(st,info,pr,extra){
   const ahead=info.km-pr.km,t=info.t-pr.t;
   return `<div class="row${extra?' rec':''}"><button class="main" data-open="${st.id}">
     <b>${esc(title(st))}</b><span class="rowmeta">${esc(place(st)||CNAME[st.cc])}</span>
@@ -725,6 +779,7 @@ function drawTarget(km){
 /* ---------- stationskaart ---------- */
 function openStation(id){
   const s=byId(id);if(!s)return;
+  const b=brandOf(s);
   const rows=[];
   if(s.b&&s.b!==title(s))rows.push(['Merk',s.b]);
   if(s.o&&s.o!==title(s)&&s.o!==s.b)rows.push(['Exploitant',s.o]);
@@ -745,7 +800,7 @@ function openStation(id){
     nav=`<a class="btn" href="${gmaps(s)}" target="_blank" rel="noopener">Google Maps</a><a class="btn waze" href="${waze(s)}" target="_blank" rel="noopener">Waze</a>`;
   }
   $('#sheet').innerHTML=`<div class="grip"></div>
-  <div class="head"><h2>${esc(title(s))}</h2>
+  <div class="head"><span class="bdg big" style="--c:${b.bg};--f:${b.fg}">${esc(b.mono)}</span><h2>${esc(title(s))}</h2>
    <button class="heart ${favs.has(id)?'on':''}" id="sheetFav" aria-label="Favoriet">${favs.has(id)?ICON_HEART:ICON_HEART_O}</button>
    <button class="close" id="sheetClose" aria-label="Sluiten">&#x2715;</button></div>
   ${routeHtml}
@@ -766,7 +821,26 @@ function toggleFav(id){favs.has(id)?favs.delete(id):favs.add(id);saveFavs();rend
   toast(favs.has(id)?'Toegevoegd aan favorieten':'Verwijderd uit favorieten',1600)}
 
 /* ---------- lijsten ---------- */
+/* merkkleuren en beginletters (geen officiële logo's) */
+const BRANDS=[[/\bshell\b/i,'#ffd500','#d1151b','SH'],[/\btotal/i,'#ffffff','#e2001a','TE'],[/\besso\b/i,'#e30613','#ffffff','ES'],[/\borange ?gas\b/i,'#ff7a1a','#ffffff','OG'],[/\bstam\b/i,'#0f5fd6','#ffffff','TS'],[/\beni\b|\bagip\b/i,'#ff9800','#1a1a1a','EN'],[/\bbp\b/i,'#2e8b57','#ffd500','BP'],[/\bt-?energy\b/i,'#ffd500','#111111','TE']];
+function monoOf(t){const w=String(t||'').replace(/[^\p{L}\p{N} ]/gu,' ').trim().split(/\s+/).filter(Boolean);
+  return ((w[0]?.[0]||'C')+(w[1]?.[0]||w[0]?.[1]||'')).toUpperCase()}
+function brandOf(s){
+  const t=[s.b,s.o,s.n].join(' ');
+  for(const [re,bg,fg,mono] of BRANDS)if(re.test(t))return {bg,fg,mono};
+  const pal=['#3cf09a','#2d7bff','#ffb547','#ff5c8a','#8b7bff','#22d3ee'];
+  const src=s.b||s.o||s.n||String(s.id);let h=0;for(const ch of src)h=(h*31+ch.charCodeAt(0))|0;
+  return {bg:pal[Math.abs(h)%pal.length],fg:'#04121c',mono:monoOf(s.b||s.o||s.n||'CNG')};
+}
+const NAVSVG='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>';
 function rowHtml(s,ref){
+  const b=brandOf(s);
+  return `<div class="row st"><button class="main" data-open="${s.id}"><span class="bdg" style="--c:${b.bg};--f:${b.fg}">${esc(b.mono)}</span><span class="txt"><b>${esc(title(s))}</b><small>${esc(place(s)||CNAME[s.cc])}</small></span></button>
+   ${ref?`<span class="km">${fmtKm(dist(ref,s))}</span>`:''}
+   <button class="heart ${favs.has(s.id)?'on':''}" data-fav="${s.id}" aria-label="Favoriet">${favs.has(s.id)?ICON_HEART:ICON_HEART_O}</button>
+   <a class="navb" href="${gmaps(s)}" target="_blank" rel="noopener" aria-label="Navigeer naar station">${NAVSVG}</a></div>`;
+}
+function rowHtmlOld(s,ref){
   return `<div class="row"><button class="main" data-open="${s.id}">
    <b>${esc(title(s))}</b><small>${esc(place(s)||CNAME[s.cc])}</small></button>
    ${ref?`<span class="km">${fmtKm(dist(ref,s))}</span>`:''}
