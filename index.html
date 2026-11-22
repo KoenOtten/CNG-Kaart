@@ -14,13 +14,13 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
-:root{--petrol:#0b3c5d;--petrol2:#145a85;--accent:#f2b705;--bg:#f5f6f3;--card:#fff;--ink:#14202b;--muted:#5d6b77;--line:#dde2e6;--fav:#d6336c;
+:root{--petrol:#0b3c5d;--petrol2:#145a85;--accent:#f2b705;--bg:#f5f6f3;--card:#fff;--ink:#14202b;--muted:#5d6b77;--line:#dde2e6;--fav:#d6336c;--link:#145a85;
   --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root{--bg:#0e1419;--card:#18222b;--ink:#e8edf1;--muted:#9aa8b3;--line:#2a3743}}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1419;--card:#18222b;--ink:#e8edf1;--muted:#9aa8b3;--line:#2a3743;--link:#7cc0ea}}
 *{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;overflow:hidden}
-button,input{font:inherit;color:inherit}
+button,input,textarea,select{font:inherit;color:inherit}
 button{cursor:pointer}
 #map{position:fixed;inset:0;bottom:calc(64px + var(--sb));z-index:1;background:#dfe6ea}
 /* zoekbalk */
@@ -31,42 +31,64 @@ button{cursor:pointer}
 .search .x{border:0;background:none;padding:0 12px;color:var(--muted);display:none}
 .round{pointer-events:auto;width:48px;height:48px;border-radius:14px;border:0;background:var(--card);box-shadow:0 4px 16px rgba(0,0,0,.16);display:grid;place-items:center;color:var(--petrol2)}
 .round.on{background:var(--petrol);color:#fff}
-.results{pointer-events:auto;max-width:640px;margin:8px auto 0;background:var(--card);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.18);overflow:hidden;display:none;max-height:55vh;overflow-y:auto}
+.results{pointer-events:auto;max-width:640px;margin:8px auto 0;background:var(--card);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.18);display:none;max-height:55vh;overflow-y:auto}
 .results button{display:block;width:100%;text-align:left;border:0;background:none;padding:12px 14px;border-top:1px solid var(--line)}
 .results button:first-child{border-top:0}
 .results small{display:block;color:var(--muted)}
 .results .hd{padding:8px 14px;font-size:13px;color:var(--muted);background:var(--bg)}
+.routebar{pointer-events:auto;max-width:640px;margin:8px auto 0;background:var(--petrol);color:#fff;border-radius:12px;padding:8px 8px 8px 14px;display:none;align-items:center;gap:8px;font-size:14px;box-shadow:0 4px 16px rgba(0,0,0,.16)}
+.routebar span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.routebar button{border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:9px;padding:6px 10px;font-size:13px}
 /* tabbalk */
-.tabs{position:fixed;z-index:900;left:0;right:0;bottom:0;height:calc(64px + var(--sb));padding-bottom:var(--sb);background:var(--petrol);display:grid;grid-template-columns:repeat(4,1fr)}
-.tabs button{border:0;background:none;color:#b9cfdf;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:12px}
+.tabs{position:fixed;z-index:900;left:0;right:0;bottom:0;height:calc(64px + var(--sb));padding-bottom:var(--sb);background:var(--petrol);display:grid;grid-template-columns:repeat(5,1fr)}
+.tabs button{border:0;background:none;color:#b9cfdf;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px}
 .tabs button.on{color:#fff}
 .tabs button.on svg{color:var(--accent)}
 /* panelen */
-.panel{position:fixed;z-index:800;left:0;right:0;top:0;bottom:calc(64px + var(--sb));background:var(--bg);overflow-y:auto;padding:calc(var(--st) + 16px) 16px 24px;display:none}
+.panel{position:fixed;z-index:800;left:0;right:0;top:0;bottom:calc(64px + var(--sb));background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(var(--st) + 16px) 16px 24px;display:none}
 .panel.on{display:block}
 .panel h1{font-size:28px;line-height:1.1;margin:4px 0 4px}
+.panel h3{font-size:17px;margin:18px 0 8px}
 .panel .sub{color:var(--muted);margin:0 0 16px;font-size:14px}
 .wrap{max-width:640px;margin:0 auto}
 .row{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:14px;padding:12px 14px;margin-bottom:8px;border:1px solid var(--line);width:100%;text-align:left}
-.row .main{flex:1}
+.row .main{flex:1;border:0;background:none;text-align:left;padding:0}
 .row b{display:block;font-weight:600}
 .row small{display:block;color:var(--muted);font-size:13px}
-.km{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600;color:var(--petrol2)}
-@media(prefers-color-scheme:dark){.km{color:#7cc0ea}}
+.km{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600;color:var(--link)}
 .heart{border:0;background:none;width:44px;height:44px;display:grid;place-items:center;color:var(--muted);flex:none}
 .heart.on{color:var(--fav)}
-.empty{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:20px;color:var(--muted)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 18px;border-radius:12px;border:0;background:var(--petrol);color:#fff;font-weight:600;text-decoration:none}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:16px;color:var(--muted);font-size:15px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 18px;border-radius:12px;border:0;background:var(--petrol);color:#fff;font-weight:600;text-decoration:none;text-align:center}
 .btn.alt{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.sm{min-height:40px;padding:0 12px;font-size:14px}
 .btn[disabled]{opacity:.55}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btnrow .btn{flex:1 1 140px}
 .chip{font-size:12px;padding:3px 8px;border-radius:99px;background:var(--bg);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
 .chip.ok{color:#1b7f4b;border-color:#9fd6b6}
 .chip.err{color:#b42318;border-color:#f3b4ae}
 .chip.busy{color:var(--petrol2);border-color:#9cc6e2}
 .small{font-size:13px;color:var(--muted)}
 .small a{color:inherit}
+.err-t{color:#b42318}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.card label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+.card label:first-child{margin-top:0}
+textarea,.inp,select{width:100%;font-size:16px;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);outline-color:var(--petrol2)}
+textarea{resize:vertical;min-height:64px}
+details summary{cursor:pointer;padding:12px 0 2px;color:var(--link);font-weight:600}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--bg);border-radius:12px;padding:4px;border:1px solid var(--line)}
+.seg button{border:0;background:none;border-radius:9px;min-height:40px;font-size:14px}
+.seg button.on{background:var(--petrol);color:#fff}
+.inline{display:flex;gap:8px;align-items:center}
+.inline .unit{color:var(--muted);white-space:nowrap}
+.sum{font-size:20px;font-weight:700;line-height:1.2;margin:0 0 4px}
+.rec{border-left:5px solid var(--accent)}
+.rkm{font-variant-numeric:tabular-nums;font-weight:700;color:var(--link);white-space:nowrap}
+.rowmeta{display:block;color:var(--muted);font-size:13px}
 /* stationskaart */
-.sheet{position:fixed;z-index:850;left:0;right:0;bottom:calc(64px + var(--sb));background:var(--card);border-radius:20px 20px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.2);padding:10px 18px 18px;transform:translateY(110%);transition:transform .25s ease;max-height:75vh;overflow-y:auto}
+.sheet{position:fixed;z-index:850;left:0;right:0;bottom:calc(64px + var(--sb));background:var(--card);border-radius:20px 20px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.2);padding:10px 18px 18px;transform:translateY(110%);transition:transform .25s ease;max-height:78vh;overflow-y:auto}
 .sheet.on{transform:none}
 .grip{width:40px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 10px}
 .sheet h2{font-size:22px;line-height:1.15;margin:0;flex:1}
@@ -75,21 +97,24 @@ button{cursor:pointer}
 .sheet dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:14px 0;font-size:15px}
 .sheet dt{color:var(--muted)}
 .sheet dd{margin:0;overflow-wrap:anywhere}
+.onroute{background:var(--bg);border-radius:12px;padding:10px 12px;font-size:14px;margin-top:12px;border-left:4px solid var(--accent)}
 .nav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 10px}
-.nav a{min-height:54px;font-size:16px}
+.nav a{min-height:54px;font-size:16px;line-height:1.15;padding:6px 10px}
+.nav a small{display:block;font-weight:400;font-size:12px;opacity:.85}
+.nav a{flex-direction:column;gap:0}
 .nav .waze{background:#33ccff;color:#06263a}
 .links{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px}
-.links a,.links button{color:var(--petrol2);background:none;border:0;padding:6px 0;text-decoration:underline}
-@media(prefers-color-scheme:dark){.links a,.links button{color:#7cc0ea}}
+.links a{color:var(--link);padding:6px 0}
 /* kaartmarkers */
 .pin{width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--petrol2);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35)}
 .pin.fav{background:var(--fav)}
 .pin.priv{background:#8a96a0}
+.pin.route{background:var(--accent);border-color:var(--petrol)}
 .clu{display:grid;place-items:center;border-radius:50%;background:var(--petrol);color:#fff;font-weight:700;font-size:13px;border:3px solid var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .me{width:18px;height:18px;border-radius:50%;background:#1a73e8;border:3px solid #fff;box-shadow:0 0 0 6px rgba(26,115,232,.25)}
-.toast{position:fixed;z-index:1000;left:50%;bottom:calc(80px + var(--sb));transform:translateX(-50%);background:#14202b;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;display:none;max-width:90vw;text-align:center}
+.tgt{width:16px;height:16px;border-radius:50%;background:#fff;border:4px solid var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.toast{position:fixed;z-index:1000;left:50%;top:calc(var(--st) + 70px);transform:translateX(-50%);background:#14202b;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;display:none;max-width:90vw;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 .leaflet-control-attribution{font-size:10px}
-.leaflet-bottom.leaflet-right{margin-bottom:2px}
 .leaflet-top.leaflet-left{top:calc(var(--st) + 70px)}
 .onboard{position:fixed;z-index:700;left:12px;right:12px;bottom:calc(76px + var(--sb));max-width:520px;margin:0 auto;background:var(--card);border-radius:16px;padding:16px;box-shadow:0 8px 30px rgba(0,0,0,.2);display:none}
 .onboard h3{margin:0 0 6px;font-size:18px}
@@ -110,13 +135,43 @@ button{cursor:pointer}
     </button>
   </div>
   <div class="results" id="res"></div>
+  <div class="routebar" id="routebar"><span id="routebarT"></span><button id="routebarOpen">Stations</button><button id="routebarHide">Verberg</button></div>
 </div>
 
 <div class="onboard" id="onboard">
   <h3>Nog geen stations geladen</h3>
-  <p>De app haalt alle CNG-stations in Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Italië op uit OpenStreetMap. Dat duurt meestal een tot drie minuten. Daarna werkt de lijst ook zonder internet.</p>
+  <p>De app haalt alle CNG-stations in Nederland, België, Luxemburg, Duitsland, Frankrijk, Zwitserland en Italië op uit OpenStreetMap. Dat kan enkele minuten duren. Houd de app open tot het klaar is. Daarna werkt de lijst ook zonder internet.</p>
   <button class="btn" id="firstLoad">Stations ophalen</button>
 </div>
+
+<section class="panel" id="p-route"><div class="wrap">
+  <h1>Tanken onderweg</h1>
+  <p class="sub">Deel je route in Google Maps of Waze, kopieer de link en plak hem hier. De app zoekt CNG-stations langs die route.</p>
+  <div class="card">
+    <label for="rLink">Link uit Google Maps of Waze</label>
+    <textarea id="rLink" rows="2" placeholder="Plak hier de gedeelde link"></textarea>
+    <div class="btnrow">
+      <button class="btn alt" id="rPaste">Plakken</button>
+      <button class="btn" id="rFromLink">Route maken</button>
+    </div>
+    <details id="rManual">
+      <summary>Of vul zelf vertrek en bestemming in</summary>
+      <label for="rFrom">Van</label>
+      <input class="inp" id="rFrom" placeholder="Leeg laten voor mijn locatie" enterkeyhint="next">
+      <label for="rTo">Naar</label>
+      <input class="inp" id="rTo" placeholder="Plaats of adres" enterkeyhint="go">
+      <div class="btnrow"><button class="btn" id="rCalc">Route berekenen</button></div>
+    </details>
+  </div>
+  <div id="rStatus" class="small" role="status"></div>
+  <div id="rResult"></div>
+  <details>
+    <summary>Hoe deel ik een route?</summary>
+    <p class="small"><b>Google Maps:</b> plan de route, tik op de drie puntjes rechtsboven en kies Routebeschrijving delen. Kies Kopiëren. Werkt een korte link (maps.app.goo.gl) niet, open hem dan eerst in Safari en kopieer het lange adres uit de adresbalk.</p>
+    <p class="small"><b>Waze:</b> tik tijdens het rijden op de pijl onderaan en kies Rit delen, of open de bestemming en kies Delen. Kies Kopiëren. Waze deelt alleen de bestemming; de app rekent dan vanaf je huidige locatie.</p>
+    <p class="small">De app berekent zelf een route met dezelfde start en bestemming. Die kan iets afwijken van de route in Google Maps of Waze, bijvoorbeeld bij files of omleidingen.</p>
+  </details>
+</div></section>
 
 <section class="panel" id="p-list"><div class="wrap">
   <h1>Dichtbij</h1>
@@ -131,14 +186,14 @@ button{cursor:pointer}
 </div></section>
 
 <section class="panel" id="p-set"><div class="wrap">
-  <h1>Instellingen</h1>
+  <h1>Stations verversen</h1>
   <p class="sub" id="setSub"></p>
   <div id="countries"></div>
   <p><button class="btn" id="refreshAll">Alle landen verversen</button></p>
-  <p class="small">Verversen haalt de actuele stationslijst op bij OpenStreetMap. Gaat een land mis, dan blijft de vorige lijst van dat land staan en kun je het later opnieuw proberen.</p>
+  <p class="small">Verversen haalt de actuele stationslijst op bij OpenStreetMap. Houd de app open tot het klaar is. Gaat een land mis, dan probeert de app het automatisch nog een keer. Lukt dat niet, dan blijft de vorige lijst van dat land staan en kun je het later opnieuw proberen.</p>
   <h3>Over de gegevens</h3>
-  <p class="small">Stationsgegevens: &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap-bijdragers</a>, beschikbaar onder de ODbL-licentie. Kaart: &copy; OpenStreetMap. De gegevens worden door vrijwilligers bijgehouden en kunnen onvolledig of verouderd zijn. Prijzen en storingen staan er niet in.</p>
-  <p class="small">Versie 1.0</p>
+  <p class="small">Stations en kaart: &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap-bijdragers</a> (ODbL). Routes: OSRM op basis van OpenStreetMap. De gegevens worden door vrijwilligers bijgehouden en kunnen onvolledig of verouderd zijn. Prijzen en storingen staan er niet in.</p>
+  <p class="small">Versie 1.1</p>
 </div></section>
 
 <div class="sheet" id="sheet" role="dialog" aria-label="Station"></div>
@@ -146,6 +201,7 @@ button{cursor:pointer}
 
 <nav class="tabs">
   <button data-tab="map" class="on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>Kaart</button>
+  <button data-tab="route"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H16a3.5 3.5 0 0 0 0-7H8a3.5 3.5 0 0 1 0-7h7.5"/></svg>Route</button>
   <button data-tab="list"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>Dichtbij</button>
   <button data-tab="fav"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6a5.2 5.2 0 0 1 9.3 6c-2.3 4.6-9.3 9-9.3 9z"/></svg>Favorieten</button>
   <button data-tab="set"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>Verversen</button>
@@ -157,7 +213,11 @@ button{cursor:pointer}
 {
 const COUNTRIES=[['NL','Nederland'],['BE','België'],['LU','Luxemburg'],['DE','Duitsland'],['FR','Frankrijk'],['CH','Zwitserland'],['IT','Italië']];
 const CNAME=Object.fromEntries(COUNTRIES);
+/* zoekgebied per land (zuid,west,noord,oost): alleen het Europese deel */
+const BBOX={NL:'50.7,3.2,53.7,7.3',BE:'49.45,2.5,51.55,6.45',LU:'49.4,5.7,50.2,6.55',DE:'47.2,5.8,55.1,15.1',FR:'41.3,-5.3,51.15,9.7',CH:'45.8,5.9,47.85,10.55',IT:'35.4,6.6,47.1,18.6'};
 const MIRRORS=['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter','https://overpass.private.coffee/api/interpreter'];
+const ROUTERS=['https://router.project-osrm.org','https://routing.openstreetmap.de/routed-car'];
+const NOMI='https://nominatim.openstreetmap.org/search?format=jsonv2&accept-language=nl';
 const KEY='cngkaart.v1';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -166,11 +226,14 @@ const ICON_HEART='<svg width="24" height="24" viewBox="0 0 24 24" fill="currentC
 const ICON_HEART_O='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6a5.2 5.2 0 0 1 9.3 6c-2.3 4.6-9.3 9-9.3 9z"/></svg>';
 
 /* ---------- opslag ---------- */
-let data={stations:[],updated:{}}, favs=new Set(), status={};
-try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.stations))data=d}catch(e){}
-try{favs=new Set(JSON.parse(localStorage.getItem(KEY+'.favs'))||[])}catch(e){}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){toast('Opslaan op de telefoon is niet gelukt')}};
-const saveFavs=()=>{try{localStorage.setItem(KEY+'.favs',JSON.stringify([...favs]))}catch(e){}};
+const load=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(e){return d}};
+const store=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
+let data=load(KEY,null);if(!data||!Array.isArray(data.stations))data={stations:[],updated:{}};
+let favs=new Set(load(KEY+'.favs',[]));
+let rset=Object.assign({mode:'range',val:'',max:3},load(KEY+'.rset',{}));
+let status={};
+const save=()=>{if(!store(KEY,data))toast('Opslaan op de telefoon is niet gelukt')};
+const saveFavs=()=>store(KEY+'.favs',[...favs]);
 const byId=id=>data.stations.find(s=>s.id===id);
 
 function toast(t,ms=3000){const el=$('#toast');el.textContent=t;el.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>el.style.display='none',ms)}
@@ -182,58 +245,76 @@ function toStation(el,cc){
   const lat=el.lat??el.center?.lat, lon=el.lon??el.center?.lon;
   if(lat==null||lon==null)return null;
   const street=[t['addr:street'],t['addr:housenumber']].filter(Boolean).join(' ');
-  const city=t['addr:city']||t['addr:place']||'';
   return {id:el.type[0]+el.id,cc,lat:+lat.toFixed(6),lon:+lon.toFixed(6),
-    n:t.name||'',b:t.brand||'',o:t.operator||'',a:street,p:t['addr:postcode']||'',c:city,
+    n:t.name||'',b:t.brand||'',o:t.operator||'',a:street,p:t['addr:postcode']||'',c:t['addr:city']||t['addr:place']||'',
     h:t.opening_hours||'',acc:t.access||'',bio:(t['fuel:biogas']==='yes'||t['fuel:biomethane']==='yes')?1:0,
-    w:t.website||t['contact:website']||'',ph:t.phone||t['contact:phone']||''};
+    w:t.website||t['contact:website']||'',ph:t.phone||t['contact:phone']||'',ac:t['addr:country']||''};
 }
-async function fetchCountry(cc){
-  const q=`[out:json][timeout:180];area["ISO3166-1"="${cc}"][admin_level=2]->.a;nwr["fuel:cng"="yes"](area.a);out center tags;`;
+function why(e){
+  const m=String(e&&e.message||e);
+  if(/429/.test(m))return 'server te druk';
+  if(/50[234]|timed out|timeout|abort/i.test(m))return 'server reageerde te traag';
+  if(/Failed to fetch|Load failed|NetworkError/i.test(m))return 'geen verbinding';
+  return m.slice(0,60);
+}
+async function overpass(q){
   let last;
   for(const m of MIRRORS){
-    const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),200000);
+    const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),120000);
     try{
       const r=await fetch(m,{method:'POST',body:'data='+encodeURIComponent(q),headers:{'Content-Type':'application/x-www-form-urlencoded'},signal:ac.signal});
       if(!r.ok)throw new Error('HTTP '+r.status);
       const j=await r.json();
-      if(j.remark&&/error|timed out/i.test(j.remark))throw new Error(j.remark);
-      const list=(j.elements||[]).map(e=>toStation(e,cc)).filter(Boolean);
-      if(!list.length)throw new Error('Leeg antwoord');
-      return list;
+      if(j.remark&&/error|timed out|out of memory/i.test(j.remark))throw new Error('timeout');
+      return j.elements||[];
     }catch(e){last=e}finally{clearTimeout(tm)}
     await sleep(1500);
   }
-  throw last||new Error('Onbekende fout');
+  throw last||new Error('onbekende fout');
+}
+async function fetchCountry(cc){
+  const bb=BBOX[cc];
+  /* 1: land binnen het Europese zoekgebied */
+  try{
+    const el=await overpass(`[out:json][timeout:90][bbox:${bb}];area["ISO3166-1"="${cc}"][admin_level=2]->.a;nwr["fuel:cng"="yes"](area.a);out center tags;`);
+    const list=el.map(e=>toStation(e,cc)).filter(Boolean);
+    if(list.length)return list;
+  }catch(e){console.warn(cc,'area',e)}
+  /* 2: terugval: alleen het rechthoekige zoekgebied */
+  const el=await overpass(`[out:json][timeout:90];nwr["fuel:cng"="yes"](${bb});out center tags;`);
+  const other=new Set(data.stations.filter(s=>s.cc!==cc).map(s=>s.id));
+  return el.map(e=>toStation(e,cc)).filter(s=>s&&!other.has(s.id)&&(!s.ac||s.ac.toUpperCase()===cc));
 }
 let busy=false;
 async function refresh(ccs){
   if(busy)return; busy=true; renderSettings();
-  let ok=0,fail=0;
-  for(const cc of ccs){
-    status[cc]='busy';renderSettings();
+  const failed=[];let ok=0;
+  async function one(cc){
+    status[cc]={s:'busy'};renderSettings();
     try{
       const list=await fetchCountry(cc);
       data.stations=data.stations.filter(s=>s.cc!==cc).concat(list);
-      data.updated[cc]=Date.now();save();status[cc]='ok';ok++;
-      renderMarkers();
-    }catch(e){status[cc]='err';fail++;console.warn(cc,e)}
-    renderSettings();
-    await sleep(1200);
+      data.updated[cc]=Date.now();save();status[cc]={s:'ok'};ok++;renderMarkers();return true;
+    }catch(e){status[cc]={s:'err',m:why(e)};console.warn(cc,e);return false}
+    finally{renderSettings()}
   }
+  for(const cc of ccs){if(!await one(cc))failed.push(cc);await sleep(1200)}
+  let fail=0;
+  if(failed.length){await sleep(5000);for(const cc of failed){if(!await one(cc))fail++;await sleep(2000)}}
   busy=false;renderSettings();renderLists();updateOnboard();
   if(!me&&data.stations.length)locate(false);
-  toast(fail?`${ok} land(en) bijgewerkt, ${fail} mislukt. Probeer die later opnieuw.`:'Alle stations zijn bijgewerkt',4500);
+  toast(fail?`${ok} land(en) bijgewerkt, ${fail} mislukt. Probeer die later opnieuw.`:'Stations zijn bijgewerkt',4500);
 }
 
 /* ---------- kaart ---------- */
-const map=L.map('map',{zoomControl:false,attributionControl:true}).setView([51.2,6.5],6);
+const map=L.map('map',{zoomControl:false}).setView([51.2,6.5],6);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,
   attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
 const cluster=L.markerClusterGroup({showCoverageOnHover:false,maxClusterRadius:50,
   iconCreateFunction:c=>{const n=c.getChildCount(),s=n<10?34:n<100?40:48;return L.divIcon({html:`<div class="clu" style="width:${s}px;height:${s}px">${n}</div>`,className:'',iconSize:[s,s]})}});
 map.addLayer(cluster);
-const pin=s=>L.divIcon({html:`<div class="pin${favs.has(s.id)?' fav':(s.acc==='private'||s.acc==='customers'?' priv':'')}"></div>`,className:'',iconSize:[26,26],iconAnchor:[13,26]});
+const pinCls=s=>favs.has(s.id)?' fav':onRoute.has(s.id)?' route':(s.acc==='private'||s.acc==='customers'?' priv':'');
+const pin=s=>L.divIcon({html:`<div class="pin${pinCls(s)}"></div>`,className:'',iconSize:[26,26],iconAnchor:[13,26]});
 function renderMarkers(){
   cluster.clearLayers();
   cluster.addLayers(data.stations.map(s=>L.marker([s.lat,s.lon],{icon:pin(s),title:title(s)}).on('click',()=>openStation(s.id))));
@@ -241,16 +322,22 @@ function renderMarkers(){
 
 /* ---------- locatie ---------- */
 let me=null,meMarker=null;
-function locate(fly){
-  if(!navigator.geolocation){toast('Locatie wordt niet ondersteund');return}
-  $('#locate').classList.add('on');
-  navigator.geolocation.getCurrentPosition(p=>{
-    me={lat:p.coords.latitude,lon:p.coords.longitude};
-    if(!meMarker)meMarker=L.marker([me.lat,me.lon],{icon:L.divIcon({html:'<div class="me"></div>',className:'',iconSize:[18,18]}),interactive:false,zIndexOffset:1000}).addTo(map);
-    else meMarker.setLatLng([me.lat,me.lon]);
-    if(fly)map.setView([me.lat,me.lon],11);
-    renderLists();
-  },()=>{$('#locate').classList.remove('on');if(fly)toast('Geen toegang tot je locatie. Sta dit toe in de instellingen van je iPhone.')},{enableHighAccuracy:false,timeout:10000,maximumAge:120000});
+function setMe(lat,lon){
+  me={lat,lon};
+  if(!meMarker)meMarker=L.marker([lat,lon],{icon:L.divIcon({html:'<div class="me"></div>',className:'',iconSize:[18,18]}),interactive:false,zIndexOffset:1000}).addTo(map);
+  else meMarker.setLatLng([lat,lon]);
+}
+function getPos(maxAge=60000){
+  return new Promise((res,rej)=>{
+    if(!navigator.geolocation)return rej(new Error('Locatie wordt niet ondersteund'));
+    navigator.geolocation.getCurrentPosition(p=>{setMe(p.coords.latitude,p.coords.longitude);$('#locate').classList.add('on');res({lat:me.lat,lon:me.lon,label:'Mijn locatie'})},
+      ()=>rej(new Error('Geen toegang tot je locatie. Sta dit toe bij Instellingen > Privacy > Locatievoorzieningen > Safari-websites.')),
+      {enableHighAccuracy:true,timeout:15000,maximumAge:maxAge});
+  });
+}
+function locate(fly,maxAge){
+  getPos(maxAge).then(()=>{if(fly)map.setView([me.lat,me.lon],11);renderLists();if(route)renderRoute()})
+    .catch(e=>{$('#locate').classList.remove('on');if(fly)toast(e.message,5000)});
 }
 $('#locate').onclick=()=>locate(true);
 
@@ -258,21 +345,319 @@ $('#locate').onclick=()=>locate(true);
 function dist(a,b){const R=6371,r=Math.PI/180,dLa=(b.lat-a.lat)*r,dLo=(b.lon-a.lon)*r;
   const h=Math.sin(dLa/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
 const refPoint=()=>me||(c=>({lat:c.lat,lon:c.lng}))(map.getCenter());
-const fmtKm=d=>d<10?d.toFixed(1).replace('.',',')+' km':Math.round(d)+' km';
+const fmtKm=d=>d<10?d.toFixed(1).replace('.',',')+' km':Math.round(d).toLocaleString('nl-NL')+' km';
+const fmtDur=s=>{s=Math.max(0,Math.round(s/60));const h=Math.floor(s/60),m=s%60;return h?`${h} u ${String(m).padStart(2,'0')}`:`${m} min`};
+const clock=s=>new Date(Date.now()+s*1000).toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
 const title=s=>s.n||s.b||s.o||'CNG-station';
 const place=s=>[s.a,[s.p,s.c].filter(Boolean).join(' ')].filter(Boolean).join(', ');
 const fmtDate=t=>new Date(t).toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'});
 const gmaps=s=>`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lon}&travelmode=driving`;
+const gmapsVia=(s,to)=>`https://www.google.com/maps/dir/?api=1&destination=${to.lat},${to.lon}&waypoints=${s.lat},${s.lon}&travelmode=driving`;
 const gplace=s=>`https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}`;
 const waze=s=>`https://waze.com/ul?ll=${s.lat},${s.lon}&navigate=yes`;
 function hours(h){if(!h)return'';if(h.trim()==='24/7')return'Dag en nacht open';
   return h.replace(/\bMo\b/g,'ma').replace(/\bTu\b/g,'di').replace(/\bWe\b/g,'wo').replace(/\bTh\b/g,'do').replace(/\bFr\b/g,'vr').replace(/\bSa\b/g,'za').replace(/\bSu\b/g,'zo').replace(/\bPH\b/g,'feestdagen').replace(/\boff\b/g,'gesloten').replace(/;\s*/g,'; ')}
 
+/* ======================================================
+   ROUTE
+   ====================================================== */
+let route=null,routeLayer=null,tgtLayer=null,onRoute=new Map(),routeShown=true;
+
+/* --- link uitlezen --- */
+function geohash(h){
+  const B='0123456789bcdefghjkmnpqrstuvwxyz';let even=true,lat=[-90,90],lon=[-180,180];
+  for(const ch of h.toLowerCase()){const v=B.indexOf(ch);if(v<0)break;
+    for(let i=4;i>=0;i--){const bit=(v>>i)&1,r=even?lon:lat,mid=(r[0]+r[1])/2;bit?r[0]=mid:r[1]=mid;even=!even}}
+  return {lat:(lat[0]+lat[1])/2,lon:(lon[0]+lon[1])/2};
+}
+const dec=s=>{try{return decodeURIComponent(String(s).replace(/\+/g,' '))}catch(e){return String(s).replace(/\+/g,' ')}};
+function llOf(s){const m=String(s).match(/(-?\d{1,2}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)/);return m?{lat:+m[1],lon:+m[2]}:null}
+function spec(raw){
+  const s=dec(raw||'').trim();
+  if(!s||/^(mijn locatie|my location|your location|je locatie|huidige locatie|current location)$/i.test(s))return {me:true};
+  const ll=llOf(s);
+  if(ll&&/^[\s\d.,\-°NSEWnsew]+$/.test(s))return {...ll,label:s};
+  return {q:s};
+}
+/* bestemming uit de begeleidende tekst ("Ik ben onderweg naar Milaan", "Route naar Basel") */
+function destFromText(text){
+  const t=text.replace(/https?:\/\/\S+/g,' ');
+  const m=t.match(/\b(?:naar|to|nach|vers|verso)\s+([^\n,.!?:;]{2,80})/i);
+  if(!m)return null;
+  const d=m[1].replace(/\s+(om|at|um|à|alle|via|ik|I'?ll|ETA)\b.*$/i,'').trim();
+  return d.length>1?d:null;
+}
+function parseLink(text){
+  const r=parseLink0(text);
+  if(r.err){const d=destFromText(String(text||''));if(d&&/https?:/.test(text))return {from:{me:true},to:{q:d},note:`De link zelf kan de app niet lezen. Bestemming “${d}” is uit de tekst gehaald.`}}
+  return r;
+}
+function parseLink0(text){
+  text=String(text||'').trim();
+  if(!text)return {err:'Plak eerst een link.'};
+  const m=text.match(/https?:\/\/[^\s<>"']+/i);
+  if(!m)return {from:{me:true},to:spec(text)};
+  let u;try{u=new URL(m[0])}catch(e){return {err:'Deze link kan de app niet lezen.'}}
+  const host=u.hostname.replace(/^www\./,''),p=u.searchParams,url=m[0];
+  if(/(^|\.)goo\.gl$/.test(host)||host==='maps.app.goo.gl'||host==='g.co')
+    return {err:'Dit is een korte Google-link. Die kan de app niet zelf openen. Open de link in Safari, wacht tot Google Maps de route toont en kopieer dan het lange adres uit de adresbalk. Of vul de bestemming hieronder zelf in.'};
+  if(host.endsWith('waze.com')){
+    const gh=u.pathname.match(/\/ul\/h([0-9b-hjkmnp-z]{5,})/i);
+    if(gh)return {from:{me:true},to:{...geohash(gh[1]),label:'Bestemming uit Waze'}};
+    const ll=llOf(dec(p.get('ll')||'')) || llOf(dec((p.get('to')||'').replace(/^ll\./,'')));
+    if(ll){const fr=llOf(dec((p.get('from')||'').replace(/^ll\./,'')));return {from:fr?{...fr,label:'Vertrek uit Waze'}:{me:true},to:{...ll,label:'Bestemming uit Waze'}}}
+    if(p.get('q'))return {from:{me:true},to:spec(p.get('q'))};
+    return {err:'In deze Waze-link staat geen bestemming. Deel in Waze de bestemming (niet de rit), of vul de bestemming hieronder zelf in.'};
+  }
+  if(/(^|\.)google\.[a-z.]+$/.test(host)||host.startsWith('maps.google.')){
+    if(p.get('destination'))return {from:p.get('origin')?spec(p.get('origin')):{me:true},to:spec(p.get('destination')),via:(p.get('waypoints')||'').split('|').filter(Boolean).map(spec)};
+    if(p.get('daddr')){const parts=p.get('daddr').split(/\s*\bto:\s*/i).filter(Boolean);const to=parts.pop();return {from:p.get('saddr')?spec(p.get('saddr')):{me:true},to:spec(to),via:parts.map(spec)}}
+    const dm=u.pathname.match(/\/maps\/dir\/(.*)$/);
+    if(dm){
+      const segs=dm[1].split('/').filter(x=>!/^(@|data=|am=)/.test(x));
+      while(segs.length&&segs[segs.length-1]==='')segs.pop();
+      const all=segs.map(x=>x?spec(x):{me:true});
+      if(all.length>=2)return {from:all[0],to:all[all.length-1],via:all.slice(1,-1)};
+      if(all.length===1)return {from:{me:true},to:all[0]};
+    }
+    const d3=url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/),pm=u.pathname.match(/\/maps\/place\/([^/]+)/);
+    if(d3)return {from:{me:true},to:{lat:+d3[1],lon:+d3[2],label:pm?dec(pm[1]):'Bestemming'}};
+    if(pm)return {from:{me:true},to:spec(pm[1])};
+    const q=p.get('q')||p.get('query');if(q)return {from:{me:true},to:spec(q)};
+    const at=u.pathname.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);if(at)return {from:{me:true},to:{lat:+at[1],lon:+at[2],label:'Bestemming'}};
+    return {err:'In deze Google-link staat geen bestemming die de app kan lezen.'};
+  }
+  if(host.endsWith('apple.com')){
+    const to=p.get('daddr')||p.get('q')||p.get('ll');
+    if(to)return {from:p.get('saddr')?spec(p.get('saddr')):{me:true},to:spec(to)};
+  }
+  return {err:'Deze link wordt niet herkend. Gebruik een link uit Google Maps of Waze, of vul de bestemming zelf in.'};
+}
+
+/* --- plaatsen en route ophalen --- */
+async function resolve(s){
+  if(!s||s.me)return getPos();
+  if(s.lat!=null)return {lat:s.lat,lon:s.lon,label:s.label||`${s.lat.toFixed(4)}, ${s.lon.toFixed(4)}`};
+  const r=await fetch(NOMI+'&limit=1&q='+encodeURIComponent(s.q));
+  if(!r.ok)throw new Error('Zoeken naar plaats lukt nu niet');
+  const j=await r.json();
+  if(!j.length)throw new Error(`Plaats “${s.q}” niet gevonden`);
+  return {lat:+j[0].lat,lon:+j[0].lon,label:s.q.split(',')[0]};
+}
+async function osrm(pts){
+  const path=pts.map(p=>`${p.lon.toFixed(6)},${p.lat.toFixed(6)}`).join(';');
+  let last;
+  for(const base of ROUTERS){
+    try{
+      const r=await fetch(`${base}/route/v1/driving/${path}?overview=full&geometries=geojson&annotations=duration&steps=false`);
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const j=await r.json();
+      if(j.code!=='Ok'||!j.routes?.length)throw new Error(j.message||j.code||'geen route');
+      return j.routes[0];
+    }catch(e){last=e}
+  }
+  throw new Error('Route berekenen lukt nu niet ('+why(last)+')');
+}
+function buildRoute(rt,from,to,via){
+  const co=rt.geometry.coordinates.map(c=>[c[1],c[0]]);
+  const cum=[0];for(let i=1;i<co.length;i++)cum.push(cum[i-1]+dist({lat:co[i-1][0],lon:co[i-1][1]},{lat:co[i][0],lon:co[i][1]}));
+  const durs=(rt.legs||[]).flatMap(l=>l.annotation?.duration||[]);
+  let tm;
+  if(durs.length===co.length-1){tm=[0];for(const d of durs)tm.push(tm[tm.length-1]+d)}
+  else{const tot=cum[cum.length-1]||1;tm=cum.map(c=>c/tot*rt.duration)}
+  const c=[],t=[];let lastKm=-1;
+  for(let i=0;i<co.length;i++){if(i===0||i===co.length-1||cum[i]-lastKm>=0.15){c.push([+co[i][0].toFixed(5),+co[i][1].toFixed(5)]);t.push(Math.round(tm[i]));lastKm=cum[i]}}
+  return {c,t,from,to,via:via||[],at:Date.now()};
+}
+function prepRoute(r){
+  if(!r||!Array.isArray(r.c)||r.c.length<2)return null;
+  const cum=[0];for(let i=1;i<r.c.length;i++)cum.push(cum[i-1]+dist({lat:r.c[i-1][0],lon:r.c[i-1][1]},{lat:r.c[i][0],lon:r.c[i][1]}));
+  r.cum=cum;r.km=cum[cum.length-1];r.dur=r.t[r.t.length-1];
+  let s=90,w=180,n=-90,e=-180;for(const[a,b]of r.c){if(a<s)s=a;if(a>n)n=a;if(b<w)w=b;if(b>e)e=b}
+  r.bb=[s,w,n,e];return r;
+}
+/* dichtstbijzijnde punt op de route: afstand tot route, km en seconden vanaf de start */
+function nearest(lat,lon,maxKm){
+  const R=route,c=R.c,kx=111.32*Math.cos(lat*Math.PI/180),ky=110.57;
+  let best=Infinity,bi=-1,bt=0;
+  for(let i=0;i<c.length-1;i++){
+    const x1=(c[i][1]-lon)*kx,y1=(c[i][0]-lat)*ky,x2=(c[i+1][1]-lon)*kx,y2=(c[i+1][0]-lat)*ky;
+    if((x1>maxKm&&x2>maxKm)||(x1<-maxKm&&x2<-maxKm)||(y1>maxKm&&y2>maxKm)||(y1<-maxKm&&y2<-maxKm))continue;
+    const dx=x2-x1,dy=y2-y1,L2=dx*dx+dy*dy;let t=L2?-(x1*dx+y1*dy)/L2:0;t=t<0?0:t>1?1:t;
+    const px=x1+t*dx,py=y1+t*dy,d=Math.sqrt(px*px+py*py);
+    if(d<best){best=d;bi=i;bt=t}
+  }
+  if(bi<0)return null;
+  return {d:best,km:R.cum[bi]+bt*(R.cum[bi+1]-R.cum[bi]),t:R.t[bi]+bt*(R.t[bi+1]-R.t[bi])};
+}
+function computeOnRoute(){
+  onRoute=new Map();if(!route)return;
+  const mx=+rset.max||3,dLat=mx/110.57,[s,w,n,e]=route.bb,dLon=mx/(111.32*Math.cos(((s+n)/2)*Math.PI/180));
+  for(const st of data.stations){
+    if(st.lat<s-dLat||st.lat>n+dLat||st.lon<w-dLon||st.lon>e+dLon)continue;
+    const r=nearest(st.lat,st.lon,mx);if(r&&r.d<=mx)onRoute.set(st.id,r);
+  }
+}
+function progress(){
+  if(!route||!me)return {km:0,t:0,on:false};
+  const r=nearest(me.lat,me.lon,5);
+  return r?{km:r.km,t:r.t,on:true}:{km:0,t:0,on:false};
+}
+function kmAtTime(T){
+  const R=route;if(T>=R.dur)return R.km+(T-R.dur)/(R.dur||1)*R.km;
+  let i=0;while(i<R.t.length-1&&R.t[i+1]<T)i++;
+  const a=R.t[i],b=R.t[i+1]??a,f=b>a?(T-a)/(b-a):0;
+  return R.cum[i]+f*((R.cum[i+1]??R.cum[i])-R.cum[i]);
+}
+function parseVal(v,mode){
+  v=String(v||'').trim().replace(',','.');if(!v)return null;
+  if(mode==='time'){
+    let m=v.match(/^(\d+)\s*[:u.]\s*(\d{1,2})$/);if(m&&v.includes(':')||m&&/u/.test(v))return (+m[1])*3600+(+m[2])*60;
+    m=v.match(/^(\d+(?:\.\d+)?)\s*(min|m)$/i);if(m)return +m[1]*60;
+    const h=parseFloat(v);return isFinite(h)&&h>0?h*3600:null;
+  }
+  const k=parseFloat(v);return isFinite(k)&&k>0?k:null;
+}
+
+/* --- route maken --- */
+function setRStatus(t,err){$('#rStatus').innerHTML=t?`<p class="${err?'err-t':''}">${esc(t)}</p>`:''}
+let routing=false;
+async function makeRoute(parsed){
+  if(routing)return;
+  if(parsed.err){setRStatus(parsed.err,true);return}
+  routing=true;setRStatus('Route wordt berekend…');
+  $('#rFromLink').disabled=$('#rCalc').disabled=true;
+  try{
+    const from=await resolve(parsed.from||{me:true});
+    const via=[];for(const v of parsed.via||[])via.push(await resolve(v));
+    const to=await resolve(parsed.to);
+    const rt=await osrm([from,...via,to]);
+    const r=buildRoute(rt,from,to,via);
+    if(!store(KEY+'.route',r))console.warn('route niet opgeslagen');
+    route=prepRoute(r);routeShown=true;
+    setRStatus(parsed.note||'');computeOnRoute();renderRoute();drawRoute(true);renderMarkers();
+  }catch(e){setRStatus(e.message||String(e),true)}
+  finally{routing=false;$('#rFromLink').disabled=$('#rCalc').disabled=false}
+}
+$('#rFromLink').onclick=()=>makeRoute(parseLink($('#rLink').value));
+$('#rPaste').onclick=async()=>{
+  try{const t=await navigator.clipboard.readText();if(!t)throw 0;$('#rLink').value=t;makeRoute(parseLink(t))}
+  catch(e){$('#rLink').focus();toast('Houd je vinger in het vak en kies Plak.',3500)}
+};
+$('#rCalc').onclick=()=>{
+  const f=$('#rFrom').value.trim(),t=$('#rTo').value.trim();
+  if(!t){setRStatus('Vul een bestemming in.',true);return}
+  makeRoute({from:f?spec(f):{me:true},to:spec(t)});
+};
+$('#rTo').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#rCalc').click()}});
+
+function clearRoute(){
+  route=null;onRoute=new Map();try{localStorage.removeItem(KEY+'.route')}catch(e){}
+  if(routeLayer){map.removeLayer(routeLayer);routeLayer=null}
+  if(tgtLayer){map.removeLayer(tgtLayer);tgtLayer=null}
+  renderRoute();renderMarkers();updateRouteBar();
+}
+function drawRoute(fit){
+  if(routeLayer){map.removeLayer(routeLayer);routeLayer=null}
+  if(!route||!routeShown){updateRouteBar();return}
+  routeLayer=L.layerGroup([
+    L.polyline(route.c,{color:'#ffffff',weight:9,opacity:.9,interactive:false}),
+    L.polyline(route.c,{color:'#145a85',weight:5,opacity:.95,interactive:false})]).addTo(map);
+  if(fit)map.fitBounds(L.latLngBounds(route.c),{padding:[40,40]});
+  updateRouteBar();
+}
+function updateRouteBar(){
+  const show=route&&routeShown;
+  $('#routebar').style.display=show?'flex':'none';
+  if(show)$('#routebarT').textContent=`Route naar ${route.to.label} · ${onRoute.size} stations langs de route`;
+}
+$('#routebarOpen').onclick=()=>showTab('route');
+$('#routebarHide').onclick=()=>{routeShown=false;drawRoute(false);if(tgtLayer){map.removeLayer(tgtLayer);tgtLayer=null}};
+
+/* --- resultaat tonen --- */
+function routeRow(st,info,pr,extra){
+  const ahead=info.km-pr.km,t=info.t-pr.t;
+  return `<div class="row${extra?' rec':''}"><button class="main" data-open="${st.id}">
+    <b>${esc(title(st))}</b><span class="rowmeta">${esc(place(st)||CNAME[st.cc])}</span>
+    <span class="rowmeta">${fmtKm(info.d)} van de route${extra?' · '+extra:''}</span></button>
+    <span style="text-align:right"><span class="rkm">${ahead<0?'gepasseerd':'over '+fmtKm(ahead)}</span><span class="rowmeta">${ahead<0?'':'ca. '+fmtDur(t)+' · '+clock(t)}</span></span></div>`;
+}
+function renderRoute(){
+  const box=$('#rResult');
+  if(!route){box.innerHTML='';updateRouteBar();return}
+  computeOnRoute();
+  const pr=progress(),remKm=route.km-pr.km,remT=route.dur-pr.t;
+  const list=[...onRoute].map(([id,info])=>({st:byId(id),info})).filter(x=>x.st).sort((a,b)=>a.info.km-b.info.km);
+  const ahead=list.filter(x=>x.info.km>=pr.km-0.5);
+  const mode=rset.mode,val=parseVal(rset.val,mode);
+  let recHtml='',K=null,tgtNote='';
+  if(val!=null){
+    if(mode==='time'){K=kmAtTime(pr.t+val)-pr.km;tgtNote=`na ca. ${fmtDur(val)} rijden ben je ongeveer ${fmtKm(K)} verder`}
+    else K=val;
+    let picks;
+    if(mode==='range'){
+      picks=ahead.filter(x=>x.info.km-pr.km<=K).sort((a,b)=>b.info.km-a.info.km).slice(0,3);
+      recHtml=`<h3>Laatste stations binnen je actieradius van ${fmtKm(K)}</h3>`+(picks.length?picks.map((x,i)=>routeRow(x.st,x.info,pr,i===0?'verste station dat je haalt':'')).join(''):
+        `<div class="empty">Geen CNG-station langs de route binnen ${fmtKm(K)}. Vergroot de afstand tot de route of tank eerder.</div>`);
+      if(picks.length&&K-(picks[0].info.km-pr.km)<20)recHtml+=`<p class="small">Let op: je komt daar met minder dan 20 km over aan. Houd zelf marge aan.</p>`;
+    }else{
+      picks=ahead.slice().sort((a,b)=>Math.abs(a.info.km-pr.km-K)-Math.abs(b.info.km-pr.km-K)).slice(0,3);
+      const lbl=x=>{const d=x.info.km-pr.km-K;return Math.abs(d)<1?'precies op dat punt':fmtKm(Math.abs(d))+(d<0?' eerder':' later')};
+      recHtml=`<h3>${mode==='time'?'Stations rond '+fmtDur(val)+' rijden':'Stations rond '+fmtKm(K)}</h3>`+(tgtNote?`<p class="small">${esc(tgtNote)}.</p>`:'')+
+        (picks.length?picks.map(x=>routeRow(x.st,x.info,pr,lbl(x))).join(''):'<div class="empty">Geen CNG-stations langs deze route.</div>');
+    }
+    if(K>remKm)recHtml+=`<p class="small">Dit punt ligt voorbij je bestemming (nog ${fmtKm(remKm)}).</p>`;
+  }
+  drawTarget(val!=null&&K!=null&&K<=remKm?pr.km+K:null);
+  const ph={range:'bijv. 250',km:'bijv. 100',time:'bijv. 2 of 1:30'}[mode],unit={range:'km',km:'km',time:'uur'}[mode];
+  box.innerHTML=`
+  <div class="card">
+    <p class="sum">${esc(route.from.label)} → ${esc(route.to.label)}</p>
+    <p class="small" style="margin:0">${pr.on&&pr.km>0.5?`Nog ${fmtKm(remKm)} · ca. ${fmtDur(remT)} · aankomst ca. ${clock(remT)}`:`${fmtKm(route.km)} · ca. ${fmtDur(route.dur)} rijden`}</p>
+    ${me&&!pr.on?'<p class="small" style="margin:6px 0 0">Je bent niet op deze route. Afstanden gelden vanaf het vertrekpunt.</p>':''}
+    <div class="btnrow">
+      <button class="btn sm" id="rShow">Toon op kaart</button>
+      <button class="btn sm alt" id="rAgain">Opnieuw vanaf mijn locatie</button>
+      <button class="btn sm alt" id="rClear">Wissen</button>
+    </div>
+  </div>
+  <div class="card">
+    <label>Waar wil je tanken?</label>
+    <div class="seg" id="rMode">
+      <button data-m="range" class="${mode==='range'?'on':''}">Actieradius</button>
+      <button data-m="km" class="${mode==='km'?'on':''}">Over afstand</button>
+      <button data-m="time" class="${mode==='time'?'on':''}">Over tijd</button>
+    </div>
+    <label for="rVal">${mode==='range'?'Hoeveel km kun je nog rijden op CNG?':mode==='km'?'Over hoeveel km wil je tanken?':'Over hoeveel tijd wil je tanken?'}</label>
+    <div class="inline"><input class="inp" id="rVal" inputmode="decimal" placeholder="${ph}" value="${esc(rset.val)}"><span class="unit">${unit}</span></div>
+    <label for="rMax">Maximale afstand van de route</label>
+    <select id="rMax">${[1,2,3,5,10].map(v=>`<option value="${v}" ${+rset.max===v?'selected':''}>${v} km</option>`).join('')}</select>
+  </div>
+  ${recHtml}
+  <h3>Alle CNG-stations langs de route (${ahead.length})</h3>
+  ${ahead.length?ahead.map(x=>routeRow(x.st,x.info,pr)).join(''):`<div class="empty">${data.stations.length?'Geen stations binnen '+rset.max+' km van de route. Vergroot de afstand.':'Er zijn nog geen stations geladen. Ga eerst naar Verversen.'}</div>`}
+  <p class="small">Afstanden zijn gemeten langs de berekende route. De afstand tot de route is hemelsbreed; de echte omweg is meestal iets langer. Tijden zijn zonder files.</p>`;
+  $('#rShow').onclick=()=>{routeShown=true;showTab('map');drawRoute(true);renderMarkers()};
+  $('#rAgain').onclick=()=>makeRoute({from:{me:true},to:route.to,via:[]});
+  $('#rClear').onclick=clearRoute;
+  $('#rMode').onclick=e=>{const b=e.target.closest('[data-m]');if(!b)return;rset.mode=b.dataset.m;rset.val='';store(KEY+'.rset',rset);renderRoute()};
+  const iv=$('#rVal');
+  iv.onchange=()=>{rset.val=iv.value;store(KEY+'.rset',rset);renderRoute()};
+  iv.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();iv.blur()}};
+  $('#rMax').onchange=e=>{rset.max=+e.target.value;store(KEY+'.rset',rset);renderRoute();renderMarkers()};
+  updateRouteBar();
+}
+function drawTarget(km){
+  if(tgtLayer){map.removeLayer(tgtLayer);tgtLayer=null}
+  if(km==null||!route||!routeShown)return;
+  let i=0;while(i<route.cum.length-1&&route.cum[i+1]<km)i++;
+  const a=route.c[i],b=route.c[i+1]||a,f=route.cum[i+1]>route.cum[i]?(km-route.cum[i])/(route.cum[i+1]-route.cum[i]):0;
+  tgtLayer=L.marker([a[0]+f*(b[0]-a[0]),a[1]+f*(b[1]-a[1])],{icon:L.divIcon({html:'<div class="tgt"></div>',className:'',iconSize:[16,16]}),interactive:false,zIndexOffset:900}).addTo(map);
+}
+
 /* ---------- stationskaart ---------- */
-let openId=null;
 function openStation(id){
-  const s=byId(id);if(!s)return;openId=id;
-  const d=me?fmtKm(dist(me,s)):'';
+  const s=byId(id);if(!s)return;
   const rows=[];
   if(s.b&&s.b!==title(s))rows.push(['Merk',s.b]);
   if(s.o&&s.o!==title(s)&&s.o!==s.b)rows.push(['Exploitant',s.o]);
@@ -282,28 +667,40 @@ function openStation(id){
   if(s.acc==='private'||s.acc==='customers')rows.push(['Toegang','Beperkt, mogelijk alleen voor klanten of eigen wagenpark']);
   if(s.bio)rows.push(['Gas','Biomethaan (groen gas) aangegeven']);
   if(s.ph)rows.push(['Telefoon',s.ph]);
-  if(d)rows.push(['Afstand',d+' hemelsbreed']);
+  if(me)rows.push(['Afstand',fmtKm(dist(me,s))+' hemelsbreed']);
+  const ri=route&&onRoute.get(id);let routeHtml='',nav;
+  if(ri){
+    const pr=progress(),ah=ri.km-pr.km;
+    routeHtml=`<div class="onroute"><b>Langs je route naar ${esc(route.to.label)}</b><br>${ah<0?'Al gepasseerd':`Over ${fmtKm(ah)} · ca. ${fmtDur(ri.t-pr.t)}`} · ${fmtKm(ri.d)} van de route</div>`;
+    nav=`<a class="btn" href="${gmapsVia(s,route.to)}" target="_blank" rel="noopener">Google Maps<small>als tussenstop</small></a>
+         <a class="btn waze" href="${waze(s)}" target="_blank" rel="noopener">Waze<small>naar dit station</small></a>`;
+  }else{
+    nav=`<a class="btn" href="${gmaps(s)}" target="_blank" rel="noopener">Google Maps</a><a class="btn waze" href="${waze(s)}" target="_blank" rel="noopener">Waze</a>`;
+  }
   $('#sheet').innerHTML=`<div class="grip"></div>
   <div class="head"><h2>${esc(title(s))}</h2>
    <button class="heart ${favs.has(id)?'on':''}" id="sheetFav" aria-label="Favoriet">${favs.has(id)?ICON_HEART:ICON_HEART_O}</button>
    <button class="close" id="sheetClose" aria-label="Sluiten">&#x2715;</button></div>
+  ${routeHtml}
   <dl>${rows.map(r=>`<dt>${r[0]}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl>
-  <div class="nav"><a class="btn" href="${gmaps(s)}" target="_blank" rel="noopener">Google Maps</a><a class="btn waze" href="${waze(s)}" target="_blank" rel="noopener">Waze</a></div>
-  <div class="links"><a href="${gplace(s)}" target="_blank" rel="noopener">Bewaren in Google Maps</a>
+  <div class="nav">${nav}</div>
+  ${ri?'<p class="small" style="margin:0 0 8px">Waze kent geen tussenstops via een link: na het tanken stel je je bestemming in Waze opnieuw in.</p>':''}
+  <div class="links">${ri?`<a href="${gmaps(s)}" target="_blank" rel="noopener">Google Maps alleen naar station</a>`:''}
+   <a href="${gplace(s)}" target="_blank" rel="noopener">Bewaren in Google Maps</a>
    ${s.w?`<a href="${esc(s.w)}" target="_blank" rel="noopener">Website</a>`:''}
    <a href="https://www.openstreetmap.org/note/new#map=18/${s.lat}/${s.lon}" target="_blank" rel="noopener">Fout melden</a></div>`;
   $('#sheet').classList.add('on');
   $('#sheetClose').onclick=closeSheet;
   $('#sheetFav').onclick=()=>{toggleFav(id);openStation(id)};
 }
-function closeSheet(){$('#sheet').classList.remove('on');openId=null}
+function closeSheet(){$('#sheet').classList.remove('on')}
 map.on('click',closeSheet);
 function toggleFav(id){favs.has(id)?favs.delete(id):favs.add(id);saveFavs();renderLists();renderMarkers();
   toast(favs.has(id)?'Toegevoegd aan favorieten':'Verwijderd uit favorieten',1600)}
 
 /* ---------- lijsten ---------- */
 function rowHtml(s,ref){
-  return `<div class="row"><button class="main" data-open="${s.id}" style="border:0;background:none;text-align:left;padding:0">
+  return `<div class="row"><button class="main" data-open="${s.id}">
    <b>${esc(title(s))}</b><small>${esc(place(s)||CNAME[s.cc])}</small></button>
    ${ref?`<span class="km">${fmtKm(dist(ref,s))}</span>`:''}
    <button class="heart ${favs.has(s.id)?'on':''}" data-fav="${s.id}" aria-label="Favoriet">${favs.has(s.id)?ICON_HEART:ICON_HEART_O}</button></div>`;
@@ -317,8 +714,8 @@ function renderLists(){
   $('#favs').innerHTML=f.length?f.map(s=>rowHtml(s,ref)).join(''):'<div class="empty">Nog geen favorieten.</div>';
 }
 document.addEventListener('click',e=>{
-  const o=e.target.closest('[data-open]'),fv=e.target.closest('[data-fav]');
-  if(fv){toggleFav(fv.dataset.fav);return}
+  const fv=e.target.closest('[data-fav]');if(fv){toggleFav(fv.dataset.fav);return}
+  const o=e.target.closest('[data-open]');
   if(o){const s=byId(o.dataset.open);if(!s)return;showTab('map');map.setView([s.lat,s.lon],Math.max(map.getZoom(),14));openStation(s.id)}
 });
 
@@ -327,26 +724,27 @@ function renderSettings(){
   const tot=data.stations.length;
   $('#setSub').textContent=tot?`${tot} stations opgeslagen op deze telefoon.`:'Nog geen stations opgeslagen.';
   $('#countries').innerHTML=COUNTRIES.map(([cc,n])=>{
-    const c=data.stations.filter(s=>s.cc===cc).length,u=data.updated[cc],st=status[cc];
-    const chip=st==='busy'?'<span class="chip busy">Bezig…</span>':st==='err'?'<span class="chip err">Mislukt</span>':st==='ok'?'<span class="chip ok">Bijgewerkt</span>':'';
-    return `<div class="row"><div class="main"><b>${n}</b><small>${c} stations${u?' · '+fmtDate(u):' · nog niet opgehaald'}</small></div>${chip}
-      <button class="btn alt" data-ref="${cc}" ${busy?'disabled':''} style="min-height:40px;padding:0 12px">Ververs</button></div>`}).join('');
+    const c=data.stations.filter(s=>s.cc===cc).length,u=data.updated[cc],st=status[cc]||{};
+    const chip=st.s==='busy'?'<span class="chip busy">Bezig…</span>':st.s==='err'?'<span class="chip err">Mislukt</span>':st.s==='ok'?'<span class="chip ok">Bijgewerkt</span>':'';
+    return `<div class="row"><div class="main"><b>${n}</b><small>${c} stations · ${u?fmtDate(u):'nog niet opgehaald'}</small>${st.s==='err'?`<small class="err-t">${esc(st.m)}</small>`:''}</div>${chip}
+      <button class="btn alt sm" data-ref="${cc}" ${busy?'disabled':''}>Ververs</button></div>`}).join('');
   $('#refreshAll').disabled=busy;
   $('#refreshAll').textContent=busy?'Bezig met ophalen…':'Alle landen verversen';
 }
 $('#countries').addEventListener('click',e=>{const b=e.target.closest('[data-ref]');if(b)refresh([b.dataset.ref])});
 $('#refreshAll').onclick=()=>refresh(COUNTRIES.map(c=>c[0]));
 function updateOnboard(){$('#onboard').style.display=data.stations.length||busy?'none':'block'}
-$('#firstLoad').onclick=()=>{updateOnboard();showTab('set');refresh(COUNTRIES.map(c=>c[0]));$('#onboard').style.display='none'};
+$('#firstLoad').onclick=()=>{$('#onboard').style.display='none';showTab('set');refresh(COUNTRIES.map(c=>c[0]))};
 
 /* ---------- tabs ---------- */
 function showTab(t){
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
-  ['list','fav','set'].forEach(p=>$('#p-'+p).classList.toggle('on',p===t));
+  ['route','list','fav','set'].forEach(p=>$('#p-'+p).classList.toggle('on',p===t));
   $('.top').style.display=t==='map'?'':'none';
   if(t!=='map')closeSheet();
   if(t==='list'||t==='fav')renderLists();
   if(t==='set')renderSettings();
+  if(t==='route'){renderRoute();if(route)locate(false,5000)}
   if(t==='map')setTimeout(()=>map.invalidateSize(),50);
 }
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
@@ -368,11 +766,11 @@ async function searchPlace(){
   const v=q.value.trim();if(!v)return;q.blur();
   res.innerHTML='<div class="hd">Zoeken…</div>';res.style.display='block';
   try{
-    const r=await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&accept-language=nl&countrycodes=nl,be,lu,de,fr,ch,it&q='+encodeURIComponent(v));
+    const r=await fetch(NOMI+'&limit=6&countrycodes=nl,be,lu,de,fr,ch,it&q='+encodeURIComponent(v));
     const j=await r.json();
     if(!j.length){res.innerHTML='<div class="hd">Geen plaats gevonden</div>';return}
     res.innerHTML='<div class="hd">Plaatsen</div>'+j.map((p,i)=>`<button data-place="${i}">${esc(p.name||p.display_name.split(',')[0])}<small>${esc(p.display_name)}</small></button>`).join('');
-    res.querySelectorAll('[data-place]').forEach(b=>b.onclick=()=>{const p=j[+b.dataset.place];res.style.display='none';map.setView([+p.lat,+p.lon],11);toast('Kaart verplaatst. De lijst Dichtbij gebruikt nu deze plek als je locatie uit staat.',3500)});
+    res.querySelectorAll('[data-place]').forEach(b=>b.onclick=()=>{const p=j[+b.dataset.place];res.style.display='none';map.setView([+p.lat,+p.lon],11)});
   }catch(e){res.innerHTML='<div class="hd">Zoeken lukt niet zonder internet</div>'}
 }
 q.addEventListener('input',showLocal);
@@ -383,6 +781,8 @@ res.addEventListener('click',e=>{if(e.target.closest('[data-open]')){res.style.d
 map.on('movestart',()=>{res.style.display='none'});
 
 /* ---------- start ---------- */
+route=prepRoute(load(KEY+'.route',null));
+if(route){computeOnRoute();drawRoute(false)}
 renderMarkers();renderLists();renderSettings();updateOnboard();
 if(data.stations.length)locate(false);
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
