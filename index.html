@@ -193,7 +193,7 @@ details summary{cursor:pointer;padding:12px 0 2px;color:var(--link);font-weight:
   <p class="small">Verversen haalt de actuele stationslijst op bij OpenStreetMap. Houd de app open tot het klaar is. Gaat een land mis, dan probeert de app het automatisch nog een keer. Lukt dat niet, dan blijft de vorige lijst van dat land staan en kun je het later opnieuw proberen.</p>
   <h3>Over de gegevens</h3>
   <p class="small">Stations en kaart: &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap-bijdragers</a> (ODbL). Routes: OSRM op basis van OpenStreetMap. De gegevens worden door vrijwilligers bijgehouden en kunnen onvolledig of verouderd zijn. Prijzen en storingen staan er niet in.</p>
-  <p class="small">Versie 1.1</p>
+  <p class="small">Versie 1.2</p>
 </div></section>
 
 <div class="sheet" id="sheet" role="dialog" aria-label="Station"></div>
@@ -259,7 +259,7 @@ function why(e){
 }
 async function overpass(q){
   let last;
-  for(const m of MIRRORS){
+  for(const m of [...MIRRORS,...MIRRORS]){
     const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),120000);
     try{
       const r=await fetch(m,{method:'POST',body:'data='+encodeURIComponent(q),headers:{'Content-Type':'application/x-www-form-urlencoded'},signal:ac.signal});
@@ -268,7 +268,7 @@ async function overpass(q){
       if(j.remark&&/error|timed out|out of memory/i.test(j.remark))throw new Error('timeout');
       return j.elements||[];
     }catch(e){last=e}finally{clearTimeout(tm)}
-    await sleep(1500);
+    await sleep(/429|50[234]|timeout/i.test(String(last&&last.message))?10000:2000);
   }
   throw last||new Error('onbekende fout');
 }
@@ -298,7 +298,7 @@ async function refresh(ccs){
     }catch(e){status[cc]={s:'err',m:why(e)};console.warn(cc,e);return false}
     finally{renderSettings()}
   }
-  for(const cc of ccs){if(!await one(cc))failed.push(cc);await sleep(1200)}
+  for(const cc of ccs){if(!await one(cc))failed.push(cc);await sleep(4000)}
   let fail=0;
   if(failed.length){await sleep(5000);for(const cc of failed){if(!await one(cc))fail++;await sleep(2000)}}
   busy=false;renderSettings();renderLists();updateOnboard();
